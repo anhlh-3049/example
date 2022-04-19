@@ -1,5 +1,33 @@
 student_flag = 0
-class_hash = {}
+
+class ClassRoom
+  @@class_lists = {}
+
+  def initialize(name="noname", math_score, literature_score, english_score)
+    avg = (math_score+literature_score+english_score)/3.0
+    @@class_lists[name] = {toan: math_score, van: literature_score, anh: english_score, avg: avg}
+  end
+
+
+  class << self
+    def class_lists
+      @@class_lists
+    end
+
+
+    def student_max_avg
+      @@class_lists.max_by{|k, v| v[:avg]}
+    end
+
+    def max_avg
+      student_max_avg[1][:avg]
+    end
+
+    def student_name_have_max_avg
+      student_max_avg[0]
+    end
+  end
+end
 
 loop do
   puts "You want to add more student?"
@@ -9,27 +37,21 @@ loop do
   if student_flag.to_i == 1
     puts "Please input name"
     student_name = gets.chomp || "no_name"
-    class_hash[student_name] = {}
     puts "Please input math score"
     math_score = (gets.chomp || "").to_i
-    class_hash[student_name][:toan] = math_score
     puts "Please input literature score"
     literature_score = (gets.chomp || "").to_i
-    class_hash[student_name][:van] = literature_score
     puts "Please input english score"
     english_score = (gets.chomp || "").to_i
-    class_hash[student_name][:anh] = english_score
-    class_hash[student_name][:avg] = (math_score+literature_score+english_score)/3.0
+
+    ClassRoom.new(student_name, math_score, literature_score, english_score)
   elsif student_flag.to_i == 2
     break
   end
 end
 
-def max_avg(hash)
-  hash.max_by{|k, v| v[:avg]}
-end
-
-print("1. List student: #{class_hash}\n")
-print("2. Max avg in class: #{max_avg(class_hash)[1][:avg]}\n")
-print("2.2. Information of student have max avg: #{max_avg(class_hash)}\n")
-print("3. Name of student have max avg: #{max_avg(class_hash)[0]}\n")
+print("=======================Result==========================\n")
+print("1. List student: #{ClassRoom.class_lists}\n")
+print("2. Max avg in class: #{ClassRoom.max_avg}\n")
+print("2.2. Information of student have max avg: #{ClassRoom.student_max_avg}\n")
+print("3. Name of student have max avg: #{ClassRoom.student_name_have_max_avg}\n")
